@@ -6,7 +6,7 @@ pip install -r requirements.txt
 python weather_service.py
 
 # Use
-http://127.0.0.1:8080/weather?city=<CityYouWantToCheck>
+http://127.0.0.1:8080/weather?city=CityName
 
 
 # week1
