@@ -1,5 +1,6 @@
-from flask import Flask
-from flask import jsonify
+
+from flask import Flask, jsonify, request
+import requests
 app = Flask(__name__)
 
 def change(amount):
@@ -37,12 +38,29 @@ def hello():
     print("I am inside hello world")
     return 'Dear user! i can give you the weather of the city you want to check: /weather/cityname'
 
-@app.route('/weather/<city>')
-def getweather(city):
+# @app.route('/weather/<city>')
+# def getweather(city):
 
-    result = f"Weather of {city}"
-    return result
-    
+#     result = f"Weather of {city}"
+#     return result
+@app.route('/weather', methods=['GET'])
+def get_weather():
+    # Get the 'city' query parameter from the request URL
+    city = request.args.get('city')
+
+    # Make a request to the weather API using the 'city' parameter
+    response = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q={city}&appid=9abe65e7ec4b7402e7eac470654a4ae4')
+
+    # Check if the API request was successful
+    if response.status_code == 200:
+        # Extract the temperature from the API response and convert it to Celsius
+        temperature = response.json()['main']['temp'] - 273.15
+
+        # Return the temperature as a JSON response
+        return jsonify({'temperature': temperature})
+    else:
+        # Return an error message as a JSON response
+        return jsonify({'error': 'Failed to retrieve weather data'}), 500
 
 
 if __name__ == '__main__':
